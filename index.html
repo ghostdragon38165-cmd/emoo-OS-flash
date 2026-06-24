@@ -4,10 +4,30 @@
     <style>
     body { margin: 0; overflow: hidden; background: #2c3e50; font-family: Arial; }
     
-    .window { position: absolute; width: 300px; background: #ecf0f1; border: 2px solid #34495e; }
-    .title-bar { background: #34495e; color: white; padding: 5px; cursor: move; display: flex; justify-content: space-between; }
-    .content { padding: 10px; height: 150px; }
-    #taskbar { position: fixed; bottom: 0; width: 100%; height: 40px; background: #333; }
+  .window { 
+    position: absolute; 
+    width: 300px; 
+    /* Transparenz durch rgba (die letzte Zahl 0.6 steht für 60% Deckkraft) */
+    background: rgba(255, 255, 255, 0.2); 
+    /* Der Unschärfe-Effekt (macht es zum "Glas") */
+    backdrop-filter: blur(10px); 
+    /* Ein dünner weißer Rahmen für den Glas-Look */
+    border: 1px solid rgba(255, 255, 255, 0.3); 
+    border-radius: 10px;
+    color: white; /* Text weiß machen, damit er auf dem Hintergrund gut lesbar ist */
+}
+
+.title-bar { 
+    /* Auch die Titelleiste etwas durchsichtig machen */
+    background: rgba(0, 0, 0, 0.4); 
+    color: white; 
+    padding: 5px; 
+    cursor: move; 
+    display: flex; 
+    justify-content: space-between; 
+    border-radius: 8px 8px 0 0;
+}
+
 
     #desktop {
         background-image: url('IMG_1413.jpeg');
