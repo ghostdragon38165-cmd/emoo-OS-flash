@@ -7,13 +7,22 @@
     <style>
         body { margin: 0; overflow: hidden; background: #2c3e50; font-family: Arial; }
         #desktop { background-image: url('IMG_1413.jpeg'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed; width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: -1; }
+        
         .window { position: absolute; width: 320px; height: 250px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 10px; color: white; }
         .title-bar { background: rgba(0, 0, 0, 0.4); color: white; padding: 5px; cursor: move; display: flex; justify-content: space-between; border-radius: 8px 8px 0 0; touch-action: none; user-select: none; }
+
+        /* Taskbar Styles */
+        #taskbar { position: fixed; bottom: -70px; left: 50%; transform: translateX(-50%); width: 80px; height: 80px; transition: bottom 0.4s ease; z-index: 1000; }
+        #start-button { width: 70px; height: 70px; cursor: pointer; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
 
     <div id="desktop"></div>
+
+    <div id="taskbar">
+        <img src="IMG_1419.jpeg" id="start-button" onclick="toggleTaskbar()">
+    </div>
 
     <div id="run-dialog" class="window" style="display: none; top: 30%; left: 35%; height: auto;">
         <div class="title-bar">Run <span onclick="document.getElementById('run-dialog').style.display='none'" style="cursor:pointer;">X</span></div>
@@ -34,7 +43,15 @@
     </div>
 
 <script>
-    // 1. Befehlslogik
+    // Taskbar Logik
+    function toggleTaskbar() {
+        let bar = document.getElementById('taskbar');
+        bar.style.bottom = (bar.style.bottom === "20px") ? "-70px" : "20px";
+    }
+    // Zeige Taskbar beim Start
+    setTimeout(() => { document.getElementById('taskbar').style.bottom = "20px"; }, 500);
+
+    // Befehlslogik
     function executeCommand() {
         let inputField = document.getElementById('term-input').value || document.getElementById('run-input').value;
         let output = document.getElementById('terminal-output');
@@ -69,7 +86,7 @@
         document.getElementById('run-dialog').style.display = 'none';
     }
 
-    // 2. Drag & Drop für Touch
+    // Drag & Drop
     document.addEventListener('touchstart', dragStart, {passive: false});
     document.addEventListener('mousedown', dragStart);
 
