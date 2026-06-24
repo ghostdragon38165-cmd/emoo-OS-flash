@@ -42,3 +42,29 @@ const OS = {
 
 // Beispielaufruf
 OS.openWindow('Terminal', 'System bereit... Warte auf Eingabe.');
+
+
+// Funktion zum Ziehen der Fenster
+document.addEventListener('mousedown', function(e) {
+    if (e.target.classList.contains('title-bar')) {
+        let windowElement = e.target.parentElement;
+        let shiftX = e.clientX - windowElement.getBoundingClientRect().left;
+        let shiftY = e.clientY - windowElement.getBoundingClientRect().top;
+
+        function moveAt(pageX, pageY) {
+            windowElement.style.left = pageX - shiftX + 'px';
+            windowElement.style.top = pageY - shiftY + 'px';
+        }
+
+        function onMouseMove(e) {
+            moveAt(e.pageX, e.pageY);
+        }
+
+        document.addEventListener('mousemove', onMouseMove);
+
+        document.onmouseup = function() {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.onmouseup = null;
+        };
+    }
+});
