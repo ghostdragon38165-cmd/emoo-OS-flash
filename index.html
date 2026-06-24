@@ -62,3 +62,12 @@
     <button onclick="OS.openWindow('Neue App', 'Inhalt...')">Start</button>
 </div>
 <script src="kernel.js"></script>
+
+<div id="run-dialog" class="window" style="display: none; top: 30%; left: 35%; width: 300px;">
+    <div class="title-bar">Run <span onclick="document.getElementById('run-dialog').style.display='none'">X</span></div>
+    <div class="content">
+        <p>Geben Sie den Namen eines Programms ein:</p>
+        <input type="text" id="run-input" style="width: 90%;" onkeydown="if(event.key==='Enter') runCommand()">
+        <button onclick="runCommand()">OK</button>
+    </div>
+</div>
