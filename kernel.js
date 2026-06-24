@@ -78,33 +78,3 @@ function startDragging(e) {
     };
 }
 
-function runCommand() {
-    let cmd = document.getElementById('run-input').value.toLowerCase(); // Alles in Kleinbuchstaben
-    let output = "";
-
-    if (cmd === "help") {
-        output = "Verfügbare Befehle: brightness [1-100], color [farbe], reload";
-    } 
-    else if (cmd.startsWith("brightness")) {
-        let level = cmd.split(" ")[1]; // Holt die Zahl nach "brightness"
-        document.body.style.filter = `brightness(${level}%)`;
-        output = "Helligkeit auf " + level + "% gesetzt.";
-    }
-    else if (cmd.startsWith("color")) {
-        let color = cmd.split(" ")[1];
-        document.body.style.backgroundColor = color;
-        output = "Hintergrundfarbe geändert.";
-    }
-    else if (cmd === "reload") {
-        location.reload();
-        return;
-    }
-    else {
-        output = "Unbekannter Befehl: " + cmd;
-    }
-
-    // Anzeige des Feedbacks
-    alert(output);
-    document.getElementById('run-dialog').style.display = 'none';
-    document.getElementById('run-input').value = '';
-}
