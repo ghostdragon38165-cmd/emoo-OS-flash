@@ -9,6 +9,7 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            
             background-attachment: fixed;
             width: 100vw;
             height: 100vh;
@@ -58,6 +59,64 @@
         </div>
     </div>
 
-    <script src="kernel.js"></script>
+<div id="terminal" class="window" style="display: none; top: 10%; left: 5%; width: 90%; height: 300px;">
+    <div class="title-bar">
+        Terminal <span onclick="document.getElementById('terminal').style.display='none'" style="cursor:pointer;">X</span>
+    </div>
+    <div id="terminal-output" style="padding: 10px; height: 180px; overflow-y: auto; font-family: monospace; font-size: 14px; color: white;"></div>
+    <div style="display: flex; gap: 5px; padding: 5px;">
+        <input type="text" id="term-input" style="flex-grow: 1; background: #222; color: white; border: 1px solid #555;" autofocus>
+        <button onclick="executeCommand()" style="background: #444; color: white; border: none; padding: 5px 10px;">Run</button>
+    </div>
+</div>
+
+<script>
+    // Terminal öffnen mit Alt + T
+    document.addEventListener('keydown', function(e) {
+        if (e.altKey && e.key === 't') {
+            document.getElementById('terminal').style.display = 'block';
+            document.getElementById('term-input').focus();
+        }
+    });
+
+    // Befehlslogik
+    function executeCommand() {
+        let input = document.getElementById('term-input');
+        let output = document.getElementById('terminal-output');
+        let cmd = input.value.toLowerCase().trim();
+        
+        if (cmd === "") return;
+
+        output.innerHTML += "<div>> " + input.value + "</div>";
+        
+        if (cmd === "help") {
+            output.innerHTML += "<div style='color: #aaa;'>Befehle: brightness [1-100], color [name], clear</div>";
+        } 
+        else if (cmd.startsWith("brightness")) {
+            let val = cmd.split(" ")[1];
+            document.body.style.filter = `brightness(${val}%)`;
+            output.innerHTML += "<div>Helligkeit: " + val + "%</div>";
+        }
+        else if (cmd.startsWith("color")) {
+            let color = cmd.split(" ")[1];
+            document.body.style.backgroundColor = color;
+            output.innerHTML += "<div>Farbe geändert.</div>";
+        }
+        else if (cmd === "clear") {
+            output.innerHTML = "";
+        }
+        else {
+            output.innerHTML += "<div style='color: red;'>Unbekannter Befehl.</div>";
+        }
+
+        input.value = '';
+        output.scrollTop = output.scrollHeight;
+        input.focus();
+    }
+</script>
+
+    
+ <script src="kernel.js"></script>
+    
 </body>
 </html>
