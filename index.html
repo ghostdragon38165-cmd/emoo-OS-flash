@@ -1,66 +1,63 @@
-</style>
+<!DOCTYPE html>
+<html>
+<head>
     <style>
-    body { margin: 0; overflow: hidden; background: #2c3e50; font-family: Arial; }
-    
-  .window { 
-    position: absolute; 
-    width: 300px; 
-    /* Transparenz durch rgba (die letzte Zahl 0.6 steht für 60% Deckkraft) */
-    background: rgba(255, 255, 255, 0.2); 
-    /* Der Unschärfe-Effekt (macht es zum "Glas") */
-    backdrop-filter: blur(10px); 
-    /* Ein dünner weißer Rahmen für den Glas-Look */
-    border: 1px solid rgba(255, 255, 255, 0.3); 
-    border-radius: 10px;
-    color: white; /* Text weiß machen, damit er auf dem Hintergrund gut lesbar ist */
-}
+        body { margin: 0; overflow: hidden; background: #2c3e50; font-family: Arial; }
 
-.title-bar { 
-    /* Auch die Titelleiste etwas durchsichtig machen */
-    background: rgba(0, 0, 0, 0.4); 
-    color: white; 
-    padding: 5px; 
-    cursor: move; 
-    display: flex; 
-    justify-content: space-between; 
-    border-radius: 8px 8px 0 0;
-    .title-bar { 
-    background: rgba(0, 0, 0, 0.4); 
-    color: white; 
-    padding: 5px; 
-    cursor: move; 
-    display: flex; 
-    justify-content: space-between; 
-    border-radius: 8px 8px 0 0;
-    touch-action: none; 
-    user-select: none;
-}
+        #desktop {
+            background-image: url('IMG_1413.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1; 
+        }
 
-}
+        .window { 
+            position: absolute; 
+            width: 300px; 
+            background: rgba(255, 255, 255, 0.2); 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3); 
+            border-radius: 10px;
+            color: white; 
+        }
 
+        .title-bar { 
+            background: rgba(0, 0, 0, 0.4); 
+            color: white; 
+            padding: 5px; 
+            cursor: move; 
+            display: flex; 
+            justify-content: space-between; 
+            border-radius: 8px 8px 0 0;
+            touch-action: none; 
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
 
-    #desktop {
-        background-image: url('IMG_1413.jpeg');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        width: 100vw;
-        height: 100vh;
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: -1; 
-    }
-</style>
+    <div id="desktop"></div>
 
-<div id="run-dialog" class="window" style="display: none; top: 30%; left: 35%; width: 300px;">
-    <div class="title-bar">Run <span onclick="document.getElementById('run-dialog').style.display='none'">X</span></div>
-    <div class="content">
-        <p>Geben Sie den Namen eines Programms ein:</p>
-        <input type="text" id="run-input" style="width: 90%;" onkeydown="if(event.key==='Enter') runCommand()">
-        <button onclick="runCommand()">OK</button>
+    <div id="run-dialog" class="window" style="display: none; top: 30%; left: 35%;">
+        <div class="title-bar">
+            Run 
+            <span onclick="document.getElementById('run-dialog').style.display='none'" style="cursor:pointer;">X</span>
+        </div>
+        <div class="content" style="padding: 10px;">
+            <p>Geben Sie den Namen ein:</p>
+            <input type="text" id="run-input" style="width: 90%;" onkeydown="if(event.key==='Enter') runCommand()">
+            <button onclick="runCommand()">OK</button>
+        </div>
     </div>
-</div>
 
-es 
+    <script src="kernel.js"></script>
+</body>
+</html>
