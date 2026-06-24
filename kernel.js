@@ -43,28 +43,37 @@ const OS = {
 // Beispielaufruf
 OS.openWindow('Terminal', 'System bereit... Warte auf Eingabe.');
 
+document.addEventListener('mousedown', startDragging);
+document.addEventListener('touchstart', startDragging, {passive: false});
 
-// Funktion zum Ziehen der Fenster
-document.addEventListener('mousedown', function(e) {
-    if (e.target.classList.contains('title-bar')) {
-        let windowElement = e.target.parentElement;
-        let shiftX = e.clientX - windowElement.getBoundingClientRect().left;
-        let shiftY = e.clientY - windowElement.getBoundingClientRect().top;
+function startDragging(e) {
+    let target = e.target.closest('.title-bar');
+    if (!target) return;
 
-        function moveAt(pageX, pageY) {
-            windowElement.style.left = pageX - shiftX + 'px';
-            windowElement.style.top = pageY - shiftY + 'px';
-        }
+    let windowElement = target.parentElement;
+    let clientX = e.clientX || e.touches[0].clientX;
+    let clientY = e.clientY || e.touches[0].clientY;
 
-        function onMouseMove(e) {
-            moveAt(e.pageX, e.pageY);
-        }
+    let shiftX = clientX - windowElement.getBoundingClientRect().left;
+    let shiftY = clientY - windowElement.getBoundingClientRect().top;
 
-        document.addEventListener('mousemove', onMouseMove);
-
-        document.onmouseup = function() {
-            document.removeEventListener('mousemove', onMouseMove);
-            document.onmouseup = null;
-        };
+    function moveAt(pageX, pageY) {
+        windowElement.style.left = (pageX - shiftX) + 'px';
+        windowElement.style.top = (pageY - shiftY) + 'px';
     }
-});
+
+    function onMove(e) {
+        let pageX = e.pageX || (e.touches ? e.touches[0].pageX : 0);
+        let pageY = e.pageY || (e.touches ? e.touches[0].pageY : 0);
+        moveAt(pageX, pageY);
+    }
+
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('touchmove', onMove, {passive: false});
+
+    document.onmouseup = document.ontouchend = function() {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('touchmove', onMove);
+        document.onmouseup = document.ontouchend = null;
+    };
+}
