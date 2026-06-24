@@ -46,25 +46,40 @@
         }
     });
 
-    // Einheitliche Befehlslogik
+     // Einheitliche Befehlslogik mit adaptivem Modus
     function executeCommand() {
-        let input = document.getElementById('term-input').value || document.getElementById('run-input').value;
+        let inputField = document.getElementById('term-input').value || document.getElementById('run-input').value;
         let output = document.getElementById('terminal-output');
-        let cmd = input.toLowerCase().trim();
+        let cmd = inputField.toLowerCase().trim();
         
         if (cmd === "") return;
-        output.innerHTML += "<div>> " + input + "</div>";
+        output.innerHTML += "<div>> " + inputField + "</div>";
         
         if (cmd === "help") {
-            output.innerHTML += "<div>Befehle: brightness [1-100], color [name], clear</div>";
-        } else if (cmd.startsWith("brightness")) {
+            output.innerHTML += "<div>Befehle: brightness [1-100], color [name/adaptive], clear</div>";
+        } 
+        else if (cmd.startsWith("brightness")) {
             document.body.style.filter = `brightness(${cmd.split(" ")[1]}%)`;
-        } else if (cmd.startsWith("color")) {
-            document.body.style.backgroundColor = cmd.split(" ")[1];
-        } else if (cmd === "clear") {
+        } 
+        else if (cmd === "color adaptive") {
+            // Der adaptive Effekt: Das Terminal passt sich dem Hintergrund an
+            let term = document.getElementById('terminal');
+            term.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
+            term.style.backdropFilter = "invert(1) blur(10px)";
+            term.style.webkitBackdropFilter = "invert(1) blur(10px)";
+            output.innerHTML += "<div>Farbe auf 'adaptive' gesetzt.</div>";
+        }
+        else if (cmd.startsWith("color")) {
+            let color = cmd.split(" ")[1];
+            document.body.style.backgroundColor = color;
+            document.getElementById('terminal').style.backdropFilter = "blur(10px)"; // Reset
+            output.innerHTML += "<div>Farbe geändert.</div>";
+        }
+        else if (cmd === "clear") {
             output.innerHTML = "";
-        } else {
-            output.innerHTML += "<div style='color: red;'>Unbekannt.</div>";
+        }
+        else {
+            output.innerHTML += "<div style='color: red;'>Unbekannter Befehl.</div>";
         }
         
         document.getElementById('term-input').value = '';
@@ -72,6 +87,7 @@
         output.scrollTop = output.scrollHeight;
         document.getElementById('run-dialog').style.display = 'none';
     }
+
 </script>
 
 </body>
