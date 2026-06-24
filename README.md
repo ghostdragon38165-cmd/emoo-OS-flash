@@ -1,2 +1,3 @@
 # emoo-OS-flash
-simple os via web
+simple free os via web
+(in development)
