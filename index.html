@@ -99,7 +99,7 @@
         
         if (cmd.startsWith("wp ")) {
             let num = cmd.split(" ")[1];
-            let wallpapers = { "1": "IMG_1413.jpeg", "2": "IMG_1423.jpeg", "3": "noch_ein_bild.jpeg" };
+            let wallpapers = { "1": "IMG_1413.jpeg", "2": "IMG_1423.jpeg", "3": "IMG_1425.jpeg" };
             if (wallpapers[num]) {
                 document.getElementById('desktop').style.backgroundImage = `url('${wallpapers[num]}')`;
                 output.innerHTML += "<div>Wallpaper " + num + " gesetzt.</div>";
