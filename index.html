@@ -2,97 +2,157 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web OS</title>
     <style>
         body { margin: 0; overflow: hidden; background: #2c3e50; font-family: Arial; }
-        #desktop { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: -1; }
-        .window { position: absolute; width: 320px; height: 250px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 10px; color: white; display: none; }
-        .title-bar { background: rgba(0, 0, 0, 0.4); padding: 5px; cursor: move; display: flex; justify-content: space-between; border-radius: 8px 8px 0 0; }
-        #taskbar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); min-width: 80px; height: 80px; background: rgba(0,0,0,0.3); border-radius: 40px; display: flex; align-items: center; justify-content: center; gap: 15px; padding: 0 15px; z-index: 1000; }
-        .icon { width: 60px; height: 60px; cursor: pointer; border-radius: 50%; border: 2px solid white; }
+        #desktop { background-image: url('IMG_1413.jpeg'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed; width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: -1; }
+        
+        .window { position: absolute; width: 320px; height: 250px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 10px; color: white; display: none; }
+        .title-bar { background: rgba(0, 0, 0, 0.4); color: white; padding: 5px; cursor: move; display: flex; justify-content: space-between; border-radius: 8px 8px 0 0; touch-action: none; user-select: none; }
+
+        /* Taskbar Styles */
+        #taskbar { 
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
+            min-width: 80px; height: 80px; background: rgba(0,0,0,0.3); 
+            border-radius: 40px; display: flex; align-items: center; justify-content: center; gap: 15px; padding: 0 15px;
+            transition: all 0.4s ease; z-index: 1000;
+        }
+        .icon { width: 60px; height: 60px; cursor: pointer; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        #app-icon, #browser-icon, #notes-icon { display: none; } 
     </style>
 </head>
-<body onload="loadState()">
+<body>
 
     <div id="desktop"></div>
 
     <div id="taskbar">
-        <img src="IMG_1419.jpeg" class="icon" onclick="toggleTaskbar()">
-        <img src="IMG_1422.jpeg" id="app-icon" class="icon" style="display:none;" onclick="toggleWindow('terminal')">
-        <img src="IMG_1426.jpeg" id="browser-icon" class="icon" style="display:none;" onclick="toggleWindow('browser')">
-        <img src="IMG_1427.jpeg" id="notes-icon" class="icon" style="display:none;" onclick="toggleWindow('notes')">
+        <img src="IMG_1419.jpeg" id="start-button" class="icon" onclick="toggleTaskbar()">
+        <img src="IMG_1422.jpeg" id="app-icon" class="icon" onclick="toggleWindow('terminal')">
+        <img src="IMG_1426.jpeg" id="browser-icon" class="icon" onclick="toggleWindow('browser')">
+        <img src="IMG_1427.jpeg" id="notes-icon" class="icon" onclick="toggleWindow('notes')">
     </div>
 
-    <div id="terminal" class="window" style="display:block; top:50px; left:50px;"><div class="title-bar">Terminal <span onclick="toggleWindow('terminal')">X</span></div><div id="terminal-output" style="height:140px; overflow:auto; padding:5px;"></div><input type="text" id="term-input"><button onclick="executeCommand()">Run</button></div>
-    <div id="browser" class="window" style="top:100px; left:100px;"><div class="title-bar">Suche <span onclick="toggleWindow('browser')">X</span></div><input type="text" id="browser-url"><button onclick="openSearch()">Go</button></div>
-    <div id="notes" class="window" style="top:150px; left:150px;"><div class="title-bar">Notizen <span onclick="toggleWindow('notes')">X</span></div><textarea id="note-area" oninput="saveState()" style="width:90%; height:70%; background:transparent; color:white;"></textarea></div>
+    <div id="run-dialog" class="window" style="top: 30%; left: 35%; height: auto;">
+        <div class="title-bar">Run <span onclick="toggleWindow('run-dialog')" style="cursor:pointer;">X</span></div>
+        <div style="padding: 10px;">
+            <p>Befehl eingeben:</p>
+            <input type="text" id="run-input" style="width: 90%;" onkeydown="if(event.key==='Enter') executeCommand()">
+            <button onclick="executeCommand()">OK</button>
+        </div>
+    </div>
+
+    <div id="browser" class="window" style="width: 280px; height: 100px; top: 15%; left: 10%;">
+        <div class="title-bar">Suche <span onclick="toggleWindow('browser')" style="cursor:pointer;">X</span></div>
+        <div style="padding: 8px; display: flex; gap: 5px;">
+            <input type="text" id="browser-url" placeholder="Google..." style="flex-grow: 1;">
+            <button onclick="openSearch()">Go</button>
+        </div>
+    </div>
+
+    <div id="notes" class="window" style="width: 250px; height: 200px; top: 10%; left: 60%;">
+        <div class="title-bar">Notizen <span onclick="toggleWindow('notes')" style="cursor:pointer;">X</span></div>
+        <textarea style="width: 90%; height: 80%; background: transparent; color: white; border: none; padding: 10px;"></textarea>
+    </div>
+
+    <div id="terminal" class="window" style="display: block; top: 10%; left: 5%;">
+        <div class="title-bar">Terminal <span onclick="toggleWindow('terminal')" style="cursor:pointer;">X</span></div>
+        <div id="terminal-output" style="padding: 10px; height: 140px; overflow-y: auto; font-family: monospace; font-size: 14px; color: white;"></div>
+        <div style="padding: 5px; display: flex;">
+            <input type="text" id="term-input" style="flex-grow: 1; background: #222; color: white; border: 1px solid #555;">
+            <button onclick="executeCommand()">Run</button>
+        </div>
+    </div>
 
 <script>
-    // 1. Speichern & Laden
-    function saveState() {
-        let state = {
-            notes: document.getElementById('note-area').value,
-            pos: {
-                terminal: {l: document.getElementById('terminal').style.left, t: document.getElementById('terminal').style.top},
-                browser: {l: document.getElementById('browser').style.left, t: document.getElementById('browser').style.top},
-                notes: {l: document.getElementById('notes').style.left, t: document.getElementById('notes').style.top}
-            }
-        };
-        localStorage.setItem('os_data', JSON.stringify(state));
-    }
-
-    function loadState() {
-        let s = localStorage.getItem('os_data');
-        if (!s) return;
-        let data = JSON.parse(s);
-        document.getElementById('note-area').value = data.notes;
-        for (let id in data.pos) {
-            let el = document.getElementById(id);
-            el.style.left = data.pos[id].l;
-            el.style.top = data.pos[id].t;
+    // 1. Taskbar Logik
+    function toggleTaskbar() {
+        let bar = document.getElementById('taskbar');
+        let appIcon = document.getElementById('app-icon');
+        let broIcon = document.getElementById('browser-icon');
+        let notIcon = document.getElementById('notes-icon');
+        
+        if (appIcon.style.display === "none" || appIcon.style.display === "") {
+            appIcon.style.display = "block";
+            broIcon.style.display = "block";
+            notIcon.style.display = "block";
+            bar.style.minWidth = "320px";
+        } else {
+            appIcon.style.display = "none";
+            broIcon.style.display = "none";
+            notIcon.style.display = "none";
+            bar.style.minWidth = "80px";
         }
     }
 
-    // 2. Drag & Drop (Verbesserte Version)
-    document.addEventListener('mousedown', function(e) {
-        if (!e.target.classList.contains('title-bar')) return;
-        let win = e.target.parentElement;
-        let shiftX = e.clientX - win.getBoundingClientRect().left;
-        let shiftY = e.clientY - win.getBoundingClientRect().top;
-
-        function move(e) {
-            win.style.left = (e.clientX - shiftX) + 'px';
-            win.style.top = (e.clientY - shiftY) + 'px';
-        }
-        function stop() {
-            document.removeEventListener('mousemove', move);
-            saveState(); // Speichert nach dem Verschieben
-        }
-        document.addEventListener('mousemove', move);
-        document.addEventListener('mouseup', stop, {once: true});
-    });
-
-    // 3. Andere Funktionen
+    // 2. Fenster Toggle
     function toggleWindow(id) {
         let el = document.getElementById(id);
-        el.style.display = (el.style.display === "none") ? "block" : "none";
-    }
-    
-    function toggleTaskbar() {
-        let icons = ['app-icon', 'browser-icon', 'notes-icon'];
-        let d = document.getElementById('app-icon').style.display === "none" ? "block" : "none";
-        icons.forEach(id => document.getElementById(id).style.display = d);
+        el.style.display = (el.style.display === "none" || el.style.display === "") ? "block" : "none";
     }
 
-    function executeCommand() {
-        let out = document.getElementById('terminal-output');
-        let val = document.getElementById('term-input').value;
-        out.innerHTML += "<div>> " + val + "</div>";
-        // Hier Befehle wie vorher...
-        document.getElementById('term-input').value = '';
+    // 3. Browser Suche
+    function openSearch() {
+        let query = document.getElementById('browser-url').value;
+        window.open('https://www.google.com/search?q=' + encodeURIComponent(query), '_blank');
     }
-    
-    function openSearch() { window.open('https://www.google.com/search?q=' + document.getElementById('browser-url').value); }
+
+    // 4. Terminal Befehlslogik
+    function executeCommand() {
+        let inputField = document.getElementById('term-input').value || document.getElementById('run-input').value;
+        let output = document.getElementById('terminal-output');
+        let cmd = inputField.toLowerCase().trim();
+        if (cmd === "") return;
+        output.innerHTML += "<div>> " + inputField + "</div>";
+        
+        if (cmd.startsWith("wp ")) {
+            let num = cmd.split(" ")[1];
+            let wallpapers = { "1": "IMG_1413.jpeg", "2": "IMG_1423.jpeg", "3": "IMG_1425.jpeg" };
+            if (wallpapers[num]) {
+                document.getElementById('desktop').style.backgroundImage = `url('${wallpapers[num]}')`;
+                output.innerHTML += "<div>Wallpaper " + num + " gesetzt.</div>";
+            } else { output.innerHTML += "<div style='color: orange;'>Nicht gefunden.</div>"; }
+        }
+        else if (cmd === "help") output.innerHTML += "<div>Befehle: brightness, color, wp [1-3], clear, google [suche], color adaptive</div>";
+        else if (cmd.startsWith("brightness ")) document.body.style.filter = `brightness(${cmd.split(" ")[1]}%)`;
+        else if (cmd === "color adaptive") {
+            document.getElementById('terminal').style.backgroundColor = "rgba(255, 255, 255, 0.1)";
+            document.getElementById('terminal').style.backdropFilter = "invert(1) blur(10px)";
+        } 
+        else if (cmd.startsWith("color ")) document.body.style.backgroundColor = cmd.split(" ")[1];
+        else if (cmd === "clear") output.innerHTML = "";
+        else if (cmd.startsWith("google ")) window.open('https://www.google.com/search?q=' + encodeURIComponent(cmd.substring(7)), '_blank');
+        else output.innerHTML += "<div style='color: red;'>Unbekannter Befehl.</div>";
+        
+        document.getElementById('term-input').value = '';
+        document.getElementById('run-input').value = '';
+        output.scrollTop = output.scrollHeight;
+        document.getElementById('run-dialog').style.display = 'none';
+    }
+
+    // 5. Shortcuts & Drag & Drop
+    document.addEventListener('keydown', (e) => {
+        if (e.altKey && e.key === 't') toggleWindow('terminal');
+        if (e.altKey && e.key === 'r') toggleWindow('run-dialog');
+    });
+
+    document.addEventListener('mousedown', dragStart);
+    document.addEventListener('touchstart', dragStart, {passive: false});
+
+    function dragStart(e) {
+        let target = e.target.closest('.title-bar');
+        if (!target) return;
+        let win = target.parentElement;
+        let shiftX = (e.clientX || e.touches[0].clientX) - win.getBoundingClientRect().left;
+        let shiftY = (e.clientY || e.touches[0].clientY) - win.getBoundingClientRect().top;
+        function move(e) { win.style.left = ((e.clientX || e.touches[0].clientX) - shiftX) + 'px'; win.style.top = ((e.clientY || e.touches[0].clientY) - shiftY) + 'px'; }
+        document.addEventListener('mousemove', move);
+        document.addEventListener('touchmove', move, {passive: false});
+        document.onmouseup = document.ontouchend = () => {
+            document.removeEventListener('mousemove', move);
+            document.removeEventListener('touchmove', move);
+        };
+    }
 </script>
 </body>
 </html>
